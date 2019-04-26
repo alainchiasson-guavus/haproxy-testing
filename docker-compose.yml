@@ -1,0 +1,21 @@
+version: '3'
+services:
+  haproxy:
+    image: mminks/haproxy-docker-logging
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy/:ro
+    ports:
+      - "60:80"
+    links:
+      - canary
+      - production
+  production:
+    image: kennethreitz/httpbin
+    environment:
+      - TAG='production'
+      - GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS}
+  canary:
+    image: kennethreitz/httpbin
+    environment:
+      - TAG='canary'
+      - GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS}
